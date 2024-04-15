@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile Page Generator</title>
+    <style>
+    .filters {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .filters label, .filters select, .filters input {
+        font-size: 1.2em;
+    }
+    #filterButton {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 1.2em;
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        text-decoration: none;
+        display: inline-block;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        margin-left: 0%;
+    }
+    #filterButton:hover {
+        background-color: #45a049;
+    }
+        .profile-container {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background: steelblue;
+            color: #fff;
+            border: 1px steelblue solid;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        .heading {
+            text-align: center;
+            width: 100%;
+            padding: 20px 0;
+            background: purple;
+            color: #fff;
+        }
+        .filters {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var profiles = [];
+
+            // Fetch the profiles
+            $.ajax({
+                url: "dataset.csv",
+                dataType: "text",
+                success: function(data) {
+                    var lines = data.split("\n");
+                    for (var i = 1; i < lines.length; i++) {
+                        var profileData = lines[i].split(",");
+                        var name = profileData[0];
+                        var age = profileData[1];
+                        var gender = profileData[2];
+
+                        // Store the profile data
+                        profiles.push({ name: name, age: age, gender: gender });
+                    }
+
+                    // Display the profiles
+                    displayProfiles(profiles);
+                }
+            });
+
+            // Filter the profiles when the filter button is clicked
+            $("#filterButton").click(function() {
+                var genderFilter = $("#gender-filter").val();
+                var nameFilter = $("#name-filter").val().toLowerCase();
+                var ageFilter = $("#age-filter").val();
+
+                var filteredProfiles = profiles.filter(function(profile) {
+                    var ageDiff = Math.abs(profile.age - ageFilter);
+                    return (profile.gender === genderFilter || genderFilter === "All") 
+                        && profile.name.toLowerCase().includes(nameFilter)
+                        && (ageDiff <= 2 || ageFilter === "");
+                });
+
+                displayProfiles(filteredProfiles);
+            });
+        });
+
+        function displayProfiles(profiles) {
+            // Clear the profiles container
+            $("#profiles").empty();
+
+            // Display each profile
+            for (var i = 0; i < profiles.length; i++) {
+                var profile = profiles[i];
+
+                // Create profile page elements
+                var profileContainer = $("<div>").addClass("profile-container");
+                var nameElement = $("<h2>").text(profile.name);
+                var ageElement = $("<p>").text("Age: " + profile.age);
+                var genderElement = $("<p>").text("Gender: " + profile.gender);
+
+                // Append elements to the profiles container
+                profileContainer.append(nameElement, ageElement, genderElement);
+                $("#profiles").append(profileContainer);
+
+                // Link the webpage to the respective name
+                var link = $("<a>").attr("href", profile.name.toLowerCase().replace(" ", "_") + "_profile.html").text("View Profile");
+                profileContainer.append(link);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1 class="heading">Connec</h1>
+    <div class="filters">
+        <label for="gender-filter">Gender:</label>
+        <select id="gender-filter">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        <label for="name-filter">Name:</label>
+        <input type="text" id="name-filter">
+        <label for="age-filter">Age:</label>
+        <input type="number" id="age-filter">
+    </div>
+    <button id="filterButton">Filter</button>
+        
+    <h2>Profiles</h2>
+    <div id="profiles"></div>
+</body>
+</html>

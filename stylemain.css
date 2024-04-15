@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile Page Generator</title>
+    <style>
+        .profile-container {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background: steelblue;
+            color: #fff;
+            border: 1px steelblue solid;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        .heading {
+            text-align: center;
+            width: 100%;
+            padding: 20px 0;
+            background: purple;
+            color: #fff;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "dataset.csv",
+                dataType: "text",
+                success: function(data) {
+                    var lines = data.split("\n");
+                    for (var i = 1; i < lines.length; i++) {
+                        var profileData = lines[i].split(",");
+                        var name = profileData[0];
+                        var age = profileData[1];
+                        var email = profileData[2];
+                        
+                        // Create profile page elements
+                        var profileContainer = $("<div>").addClass("profile-container");
+                        var nameElement = $("<h2>").text(name);
+                        var ageElement = $("<p>").text("Age: " + age);
+                        var emailElement = $("<p>").text("Gender: " + email);
+                        
+                        // Append elements to the body
+                        profileContainer.append(nameElement, ageElement, emailElement);
+                        $("body").append(profileContainer);
+                        
+                        // Link the webpage to the respective name
+                        var link = $("<a>").attr("href", name + ".html").text("View Profile");
+                        profileContainer.append(link);
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1 class="heading">Connec</h1>
+    <h2>Profiles</h2>
+    <div id="profiles"></div>
+
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "dataset.csv",
+                dataType: "text",
+                success: function(data) {
+                    var lines = data.split("\n");
+                    for (var i = 1; i < lines.length; i++) {
+                        var profileData = lines[i].split(",");
+                        var name = profileData[0];
+                        var age = profileData[1];
+                        var email = profileData[2];
+                        
+                        // Create profile page elements
+                        var profileContainer = $("<div>").addClass("profile-container");
+                        var nameElement = $("<h2>").text(name);
+                        var ageElement = $("<p>").text("Age: " + age);
+                        var emailElement = $("<p>").text("Gender: " + email);
+                        
+                        // Append elements to the profiles container
+                        profileContainer.append(nameElement, ageElement, emailElement);
+                        $("#profiles").append(profileContainer);
+                        
+                        // Link the webpage to the respective name
+                        var link = $("<a>").attr("href", name.toLowerCase().replace(" ", "_") + "_profile.html").text("View Profile");
+                        profileContainer.append(link);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
